@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Series 65 Flashcards</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; background: #f4f4f4; }
+    h1 { text-align: center; }
+    .card-container { display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; }
+    .card { width: 300px; height: 180px; perspective: 1000px; position: relative; }
+    .flip-card-inner {
+      position: absolute;
+      width: 100%; height: 100%;
+      text-align: center;
+      transition: transform 0.6s;
+      transform-style: preserve-3d;
+      cursor: pointer;
+    }
+    .card.flipped .flip-card-inner { transform: rotateY(180deg); }
+    .flip-card-front, .flip-card-back {
+      position: absolute;
+      width: 100%; height: 100%;
+      backface-visibility: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 15px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      border-radius: 10px;
+    }
+    .flip-card-front { background-color: #ffffff; }
+    .flip-card-back { background-color: #dfefff; transform: rotateY(180deg); }
+    .quiz-container { margin-top: 40px; background: white; padding: 20px; border-radius: 8px; max-width: 600px; margin: 40px auto; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+    .question { font-weight: bold; margin-bottom: 10px; }
+    .option { display: block; margin-bottom: 10px; }
+    button { margin-top: 10px; padding: 8px 12px; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <h1>Series 65 Flashcards (Ch. 1 & 2)</h1>
+  <div class="card-container" id="flashcards"></div>
+
+  <div class="quiz-container">
+    <div class="question" id="quiz-question"></div>
+    <div id="quiz-options"></div>
+    <button onclick="nextQuiz()">Next</button>
+  </div>
+
+  <script>
+    const flashcards = [
+      { q: "What are the two major market sectors?", a: "Primary Market & Secondary Market" },
+      { q: "What happens in the Primary Market?", a: "Securities are sold for the first time; proceeds go to the issuer (e.g., IPOs)" },
+      { q: "What happens in the Secondary Market?", a: "Securities are traded between investors; issuer is not involved." },
+      { q: "What is a bond?", a: "A loan to a company/government; the investor becomes a creditor." },
+      { q: "Do bonds represent ownership?", a: "No, they represent a debt obligation." },
+      { q: "How often is interest paid on bonds?", a: "Semi-annually" },
+      { q: "What is a bond point worth?", a: "$10 or 1% of $1,000" },
+      { q: "What is par value for most bonds?", a: "$1,000" }
+    ];
+
+    const quizQuestions = [
+      {
+        q: "What type of market involves securities sold for the first time?",
+        options: ["Primary Market", "Secondary Market", "Debt Market"],
+        answer: "Primary Market"
+      },
+      {
+        q: "What does a bond represent?",
+        options: ["Ownership", "Debt obligation", "Dividend"],
+        answer: "Debt obligation"
+      },
+      {
+        q: "How is bond interest usually paid?",
+        options: ["Annually", "Monthly", "Semi-annually"],
+        answer: "Semi-annually"
+      }
+    ];
+
+    const container = document.getElementById("flashcards");
+    flashcards.forEach(card => {
+      const el = document.createElement("div");
+      el.className = "card";
+      el.innerHTML = `
+        <div class="flip-card-inner">
+          <div class="flip-card-front">${card.q}</div>
+          <div class="flip-card-back">${card.a}</div>
+        </div>
+      `;
+      el.addEventListener("click", () => el.classList.toggle("flipped"));
+      container.appendChild(el);
+    });
+
+    let quizIndex = 0;
+    function showQuiz(index) {
+      const q = quizQuestions[index];
+      document.getElementById("quiz-question").textContent = q.q;
+      const optionsHTML = q.options.map(opt => `
+        <label class="option">
+          <input type="radio" name="quiz" value="${opt}"> ${opt}
+        </label>`).join("");
+      document.getElementById("quiz-options").innerHTML = optionsHTML;
+    }
+
+    function nextQuiz() {
+      const selected = document.querySelector('input[name="quiz"]:checked');
+      if (!selected) return alert("Please select an answer.");
+      const correct = quizQuestions[quizIndex].answer;
+      alert(selected.value === correct ? "Correct!" : `Wrong. Correct answer: ${correct}`);
+      quizIndex = (quizIndex + 1) % quizQuestions.length;
+      showQuiz(quizIndex);
+    }
+
+    showQuiz(quizIndex);
+  </script>
+</body>
+</html>
